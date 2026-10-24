@@ -1,0 +1,453 @@
+/* =========================================================
+   AI Assistant — estilos
+   Referência visual: IBM Carbon Design System
+   Paleta baseada nos tokens do Carbon (Gray / Blue)
+   ========================================================= */
+
+:root {
+  /* Cores — Carbon */
+  --bg: #ffffff;
+  --layer-01: #f4f4f4;
+  --layer-02: #ffffff;
+  --layer-hover: #e8e8e8;
+  --field: #f4f4f4;
+  --border-subtle: #e0e0e0;
+  --border-strong: #8d8d8d;
+
+  --text-primary: #161616;
+  --text-secondary: #525252;
+  --text-placeholder: #a8a8a8;
+  --text-inverse: #ffffff;
+
+  --blue-60: #0f62fe;
+  --blue-70: #0353e9;
+  --blue-80: #002d9c;
+  --blue-10: #edf5ff;
+  --support-error: #da1e28;
+
+  /* Tipografia — Carbon type scale (produtivo) */
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  --type-body: 0.875rem;   /* 14px */
+  --type-heading: 1rem;
+  --type-helper: 0.75rem;  /* 12px */
+  --type-title: 1.25rem;   /* 20px */
+
+  /* Espaçamento e forma — Carbon usa cantos retos */
+  --space-01: 0.25rem;
+  --space-02: 0.5rem;
+  --space-03: 0.75rem;
+  --space-04: 1rem;
+  --space-05: 1.5rem;
+  --space-06: 2rem;
+  --radius: 0;
+
+  --shadow-header: 0 1px 0 0 var(--border-subtle);
+  --transition: 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--type-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Layout ---------- */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 840px;
+  margin: 0 auto;
+  background-color: var(--bg);
+}
+
+/* ---------- Cabeçalho ---------- */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-04);
+  padding: var(--space-04) var(--space-05);
+  background-color: var(--bg);
+  box-shadow: var(--shadow-header);
+  z-index: 2;
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-03);
+  min-width: 0;
+}
+
+.app-header__logo {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  background-color: var(--blue-60);
+  color: var(--text-inverse);
+}
+
+.app-header__text {
+  min-width: 0;
+}
+
+.app-header__title {
+  margin: 0;
+  font-size: var(--type-title);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.app-header__subtitle {
+  margin: 0;
+  font-size: var(--type-helper);
+  color: var(--text-secondary);
+}
+
+/* ---------- Botões ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-02);
+  min-height: 2.5rem;
+  padding: 0 var(--space-04);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: var(--type-body);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--blue-60);
+  outline-offset: -2px;
+}
+
+.btn--primary {
+  background-color: var(--blue-60);
+  color: var(--text-inverse);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background-color: var(--blue-70);
+}
+
+.btn--primary:active:not(:disabled) {
+  background-color: var(--blue-80);
+}
+
+.btn--ghost {
+  background-color: transparent;
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.btn--ghost:hover {
+  background-color: var(--layer-hover);
+}
+
+.btn--ghost:active {
+  background-color: var(--border-subtle);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------- Área de mensagens ---------- */
+
+.messages {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-05);
+  padding: var(--space-05) var(--space-05) var(--space-06);
+  background-color: var(--bg);
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+.messages::-webkit-scrollbar {
+  width: 10px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background-color: var(--border-subtle);
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background-color: var(--border-strong);
+}
+
+/* ---------- Mensagem ---------- */
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-03);
+  max-width: 100%;
+  animation: message-in 160ms ease-out;
+}
+
+.message--user {
+  flex-direction: row-reverse;
+}
+
+.message__avatar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  margin-top: var(--space-01);
+  font-size: var(--type-helper);
+  font-weight: 600;
+}
+
+.message--assistant .message__avatar {
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+}
+
+.message--user .message__avatar {
+  background-color: var(--blue-10);
+  color: var(--blue-80);
+}
+
+.message__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+  min-width: 0;
+  max-width: min(80%, 620px);
+}
+
+.message--user .message__body {
+  align-items: flex-end;
+}
+
+.message__meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-02);
+  font-size: var(--type-helper);
+  color: var(--text-secondary);
+}
+
+.message__author {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.message__bubble {
+  padding: var(--space-03) var(--space-04);
+  background-color: var(--layer-01);
+  color: var(--text-primary);
+  border-left: 3px solid var(--text-primary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.message--user .message__bubble {
+  background-color: var(--blue-60);
+  color: var(--text-inverse);
+  border-left: 0;
+  border-right: 3px solid var(--blue-80);
+}
+
+/* ---------- Indicador de digitação ---------- */
+
+.typing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-01);
+  height: 1.25rem;
+}
+
+.typing__dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--text-secondary);
+  border-radius: 50%;
+  animation: typing-bounce 1s infinite ease-in-out;
+}
+
+.typing__dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing__dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ---------- Composer ---------- */
+
+.composer {
+  padding: var(--space-04) var(--space-05) var(--space-05);
+  background-color: var(--bg);
+  box-shadow: 0 -1px 0 0 var(--border-subtle);
+}
+
+.composer__form {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-03);
+}
+
+.composer__input {
+  flex: 1 1 auto;
+  min-height: 2.5rem;
+  max-height: 10rem;
+  padding: 0.6rem var(--space-04);
+  background-color: var(--field);
+  border: 0;
+  border-bottom: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--type-body);
+  line-height: 1.4;
+  resize: none;
+  overflow-y: auto;
+  transition: background-color var(--transition), outline var(--transition);
+}
+
+.composer__input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.composer__input:hover {
+  background-color: var(--layer-hover);
+}
+
+.composer__input:focus {
+  outline: 2px solid var(--blue-60);
+  outline-offset: -2px;
+}
+
+.composer__hint {
+  margin: var(--space-02) 0 0;
+  font-size: var(--type-helper);
+  color: var(--text-secondary);
+}
+
+/* ---------- Animações ---------- */
+
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes typing-bounce {
+  0%, 60%, 100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 672px) {
+  .app-header {
+    padding: var(--space-03) var(--space-04);
+  }
+
+  .app-header__title {
+    font-size: var(--type-heading);
+  }
+
+  .app-header__subtitle {
+    display: none;
+  }
+
+  .btn--ghost .btn__label {
+    display: none;
+  }
+
+  .btn--ghost {
+    padding: 0 var(--space-03);
+  }
+
+  .messages {
+    gap: var(--space-04);
+    padding: var(--space-04) var(--space-04) var(--space-05);
+  }
+
+  .message__body {
+    max-width: 88%;
+  }
+
+  .composer {
+    padding: var(--space-03) var(--space-04) var(--space-04);
+  }
+
+  .btn--primary .btn__label {
+    display: none;
+  }
+
+  .btn--primary {
+    padding: 0 var(--space-04);
+    min-width: 2.5rem;
+  }
+
+  .composer__hint {
+    display: none;
+  }
+}
