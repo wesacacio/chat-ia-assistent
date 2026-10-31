@@ -1,0 +1,11 @@
+# Segredos — nunca versionar. A chave do Gemini deve ficar apenas nas
+# variáveis de ambiente do Netlify (GEMINI_API_KEY), nunca num ficheiro.
+.env
+.env.*
+*.env
+
+# Estado local da CLI do Netlify
+.netlify/
+
+# Dependências, caso venham a existir
+node_modules/
