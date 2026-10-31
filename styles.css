@@ -1,7 +1,8 @@
 /* =========================================================
    AI Assistant — estilos
    Referência visual: IBM Carbon Design System
-   Paleta baseada nos tokens do Carbon (Gray / Blue)
+   Paleta baseada nos tokens do Carbon (Gray / Blue / Support)
+   Comportamento e transparência: People + AI Guidebook v2
    ========================================================= */
 
 :root {
@@ -23,7 +24,17 @@
   --blue-70: #0353e9;
   --blue-80: #002d9c;
   --blue-10: #edf5ff;
+
+  /* Cores de suporte — usadas no selo de confiança */
   --support-error: #da1e28;
+  --support-error-bg: #fff1f1;
+  --support-success: #198038;
+  --support-success-bg: #defbe6;
+  --support-warning: #8a3800;
+  --support-warning-bg: #fff8e1;
+  --support-warning-border: #f1c21b;
+
+  --overlay: rgba(22, 22, 22, 0.5);
 
   /* Tipografia — Carbon type scale (produtivo) */
   --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
@@ -42,11 +53,18 @@
   --radius: 0;
 
   --shadow-header: 0 1px 0 0 var(--border-subtle);
+  --shadow-floating: 0 2px 8px rgba(0, 0, 0, 0.32);
+  --shadow-dialog: 0 4px 16px rgba(0, 0, 0, 0.24);
   --transition: 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* O atributo hidden sempre vence (usado em banner, sugestões, status e rodapés) */
+[hidden] {
+  display: none !important;
 }
 
 html,
@@ -136,6 +154,13 @@ body {
   color: var(--text-secondary);
 }
 
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-02);
+  flex: none;
+}
+
 /* ---------- Botões ---------- */
 
 .btn {
@@ -179,17 +204,68 @@ body {
   color: var(--text-primary);
 }
 
-.btn--ghost:hover {
+.btn--ghost:hover:not(:disabled) {
   background-color: var(--layer-hover);
 }
 
-.btn--ghost:active {
+.btn--ghost:active:not(:disabled) {
   background-color: var(--border-subtle);
+}
+
+.btn--sm {
+  min-height: 2rem;
+  padding: 0 var(--space-03);
+  font-size: var(--type-helper);
 }
 
 .btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.btn__label {
+  white-space: nowrap;
+}
+
+/* ---------- Banner de transparência ---------- */
+
+.banner {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-02) var(--space-03);
+  padding: var(--space-03) var(--space-05);
+  background-color: var(--blue-10);
+  border-left: 3px solid var(--blue-60);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.banner__icon {
+  display: inline-flex;
+  flex: none;
+  margin-top: 1px;
+  color: var(--blue-60);
+}
+
+.banner__text {
+  flex: 1 1 18rem;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--type-helper);
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.banner__text strong {
+  color: var(--text-primary);
+}
+
+.banner__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-02);
+  flex: none;
+  margin-left: auto;
 }
 
 /* ---------- Área de mensagens ---------- */
@@ -216,6 +292,48 @@ body {
 
 .messages::-webkit-scrollbar-thumb:hover {
   background-color: var(--border-strong);
+}
+
+/* ---------- Sugestões (ponto de partida seguro para explorar) ---------- */
+
+.suggestions {
+  padding: 0 var(--space-05) var(--space-04);
+  background-color: var(--bg);
+}
+
+.suggestions__label {
+  margin: 0 0 var(--space-02);
+  font-size: var(--type-helper);
+  color: var(--text-secondary);
+}
+
+.suggestions__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-02);
+}
+
+.chip {
+  padding: var(--space-02) var(--space-03);
+  background-color: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--type-helper);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.chip:hover {
+  background-color: var(--layer-hover);
+  border-color: var(--text-primary);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--blue-60);
+  outline-offset: 2px;
 }
 
 /* ---------- Mensagem ---------- */
@@ -294,6 +412,188 @@ body {
   border-right: 3px solid var(--blue-80);
 }
 
+/* Rodapé da mensagem: confiança, feedback e controles */
+.message__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-02) var(--space-03);
+  font-size: var(--type-helper);
+  color: var(--text-secondary);
+}
+
+.message--user .message__footer {
+  justify-content: flex-end;
+}
+
+.message__note {
+  margin: 0;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.message__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-02);
+}
+
+.message__recourse {
+  flex: 1 1 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-01) var(--space-03);
+  color: var(--text-secondary);
+}
+
+/* Estados da mensagem */
+
+.message.is-collapsed .message__bubble {
+  display: none;
+}
+
+.message.is-hidden .message__avatar,
+.message.is-hidden .message__meta {
+  opacity: 0.5;
+}
+
+.message.is-error .message__bubble {
+  background-color: var(--support-error-bg);
+  border-left-color: var(--support-error);
+  color: var(--text-primary);
+}
+
+/* ---------- Selo de confiança (padrão PAIR) ---------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-02);
+  min-height: 1.25rem;
+  padding: 0 var(--space-02);
+  border: 1px solid var(--border-strong);
+  font-size: var(--type-helper);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.badge__dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.badge--high {
+  color: var(--support-success);
+  border-color: var(--support-success);
+  background-color: var(--support-success-bg);
+}
+
+.badge--medium {
+  color: var(--support-warning);
+  border-color: var(--support-warning-border);
+  background-color: var(--support-warning-bg);
+}
+
+.badge--low {
+  color: var(--support-error);
+  border-color: var(--support-error);
+  background-color: var(--support-error-bg);
+}
+
+/* ---------- Botões de ação em linha ---------- */
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-02);
+  padding: var(--space-01) var(--space-02);
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: var(--type-helper);
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.action-btn svg {
+  flex: none;
+}
+
+.action-btn:hover {
+  background-color: var(--layer-hover);
+  color: var(--text-primary);
+}
+
+.action-btn:focus-visible {
+  outline: 2px solid var(--blue-60);
+  outline-offset: -2px;
+}
+
+.action-btn[aria-pressed="true"] {
+  background-color: var(--blue-10);
+  border-color: var(--blue-60);
+  color: var(--blue-80);
+}
+
+.action-btn--plain {
+  padding: 0;
+}
+
+.action-btn__label {
+  white-space: nowrap;
+}
+
+/* ---------- Link em texto ---------- */
+
+.link-btn {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--blue-60);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  color: var(--blue-70);
+}
+
+.link-btn:focus-visible {
+  outline: 2px solid var(--blue-60);
+  outline-offset: 2px;
+}
+
+/* ---------- Explicação progressiva ---------- */
+
+.disclosure {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-01);
+}
+
+.disclosure__content {
+  display: block;
+  max-width: 48ch;
+  margin-top: var(--space-01);
+  padding: var(--space-02) var(--space-03);
+  background-color: var(--layer-01);
+  border-left: 2px solid var(--border-strong);
+  color: var(--text-secondary);
+  font-size: var(--type-helper);
+  line-height: 1.5;
+}
+
 /* ---------- Indicador de digitação ---------- */
 
 .typing {
@@ -364,10 +664,223 @@ body {
   outline-offset: -2px;
 }
 
-.composer__hint {
-  margin: var(--space-02) 0 0;
+.composer__status {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-01) var(--space-03);
+  margin: var(--space-03) 0 0;
+  padding: var(--space-02) var(--space-03);
+  background-color: var(--blue-10);
+  border-left: 3px solid var(--blue-60);
   font-size: var(--type-helper);
   color: var(--text-secondary);
+}
+
+.composer__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-02);
+  margin-top: var(--space-02);
+}
+
+.composer__hint {
+  margin: 0;
+  font-size: var(--type-helper);
+  color: var(--text-secondary);
+}
+
+.composer__privacy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-02);
+  margin: 0;
+  font-size: var(--type-helper);
+  color: var(--text-secondary);
+}
+
+/* ---------- Botão só de ícone ---------- */
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.icon-btn:hover {
+  background-color: var(--layer-hover);
+  color: var(--text-primary);
+}
+
+.icon-btn:focus-visible {
+  outline: 2px solid var(--blue-60);
+  outline-offset: -2px;
+}
+
+.icon-btn--sm {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+/* ---------- Diálogo "Como funciona" ---------- */
+
+.dialog {
+  width: min(640px, calc(100vw - 2rem));
+  max-height: min(85vh, 720px);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background-color: var(--layer-02);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-dialog);
+  overflow: hidden;
+}
+
+.dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog::backdrop {
+  background-color: var(--overlay);
+}
+
+.dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-04);
+  padding: var(--space-05);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.dialog__title {
+  margin: 0;
+  font-size: var(--type-title);
+  font-weight: 600;
+}
+
+.dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--space-05);
+  overflow-y: auto;
+}
+
+.dialog__section + .dialog__section {
+  margin-top: var(--space-05);
+}
+
+.dialog__heading {
+  margin: 0 0 var(--space-02);
+  font-size: var(--type-heading);
+  font-weight: 600;
+}
+
+.dialog__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--text-secondary);
+}
+
+.dialog__list li {
+  line-height: 1.6;
+}
+
+.dialog__list strong {
+  color: var(--text-primary);
+}
+
+.dialog__paragraph {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.dialog__link {
+  color: var(--blue-60);
+  font-weight: 500;
+}
+
+.dialog__link:hover {
+  color: var(--blue-70);
+}
+
+.dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-04) var(--space-05);
+  background-color: var(--layer-01);
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* ---------- Aviso (toast) com desfazer ---------- */
+
+.toast-region {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-05);
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-02);
+  width: min(560px, calc(100vw - 2rem));
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-03);
+  padding: var(--space-03) var(--space-04);
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-floating);
+  pointer-events: auto;
+  animation: message-in 160ms ease-out;
+}
+
+.toast__text {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: var(--type-helper);
+}
+
+.toast__action {
+  flex: none;
+}
+
+.toast .btn--ghost {
+  color: var(--text-inverse);
+  border-color: var(--text-inverse);
+}
+
+.toast .btn--ghost:hover {
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+.toast .icon-btn {
+  color: var(--text-inverse);
+}
+
+.toast .icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.16);
+  color: var(--text-inverse);
 }
 
 /* ---------- Animações ---------- */
@@ -417,12 +930,22 @@ body {
     display: none;
   }
 
-  .btn--ghost .btn__label {
+  .app-header .btn--ghost {
+    padding: 0 var(--space-03);
+  }
+
+  .app-header .btn--ghost .btn__label {
     display: none;
   }
 
-  .btn--ghost {
-    padding: 0 var(--space-03);
+  .banner {
+    padding: var(--space-03) var(--space-04);
+  }
+
+  .banner__actions {
+    margin-left: 0;
+    flex: 1 1 100%;
+    justify-content: flex-end;
   }
 
   .messages {
@@ -432,6 +955,10 @@ body {
 
   .message__body {
     max-width: 88%;
+  }
+
+  .suggestions {
+    padding: 0 var(--space-04) var(--space-03);
   }
 
   .composer {
@@ -449,5 +976,21 @@ body {
 
   .composer__hint {
     display: none;
+  }
+
+  .dialog__header {
+    padding: var(--space-04);
+  }
+
+  .dialog__body {
+    padding: var(--space-04);
+  }
+
+  .dialog__footer {
+    padding: var(--space-03) var(--space-04);
+  }
+
+  .toast-region {
+    bottom: var(--space-03);
   }
 }

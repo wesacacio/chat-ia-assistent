@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI Assistant</title>
-  <meta name="description" content="Protótipo de assistente conversacional em HTML, CSS e JavaScript." />
+  <meta name="description" content="Assistente conversacional de demonstração em HTML, CSS e JavaScript, com transparência sobre capacidades, limites, confiança e controle do usuário." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -24,20 +24,61 @@
         </span>
         <div class="app-header__text">
           <h1 class="app-header__title">AI Assistant</h1>
-          <p class="app-header__subtitle">Protótipo de chat · respostas simuladas</p>
+          <p class="app-header__subtitle">Converse no seu ritmo — eu aviso o que sei e o que não sei.</p>
         </div>
       </div>
 
-      <button id="new-chat-btn" class="btn btn--ghost" type="button" title="Iniciar nova conversa">
-        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
-          <path d="M16 4a12 12 0 1 0 9.9 5.2l-1.8 1.2A9.8 9.8 0 1 1 16 6.2V10l6-4-6-4z"/>
-        </svg>
-        <span class="btn__label">Nova conversa</span>
-      </button>
+      <div class="app-header__actions">
+        <button id="help-btn" class="btn btn--ghost" type="button" title="Como funciona">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/>
+            <path d="M12 17h.01"/>
+          </svg>
+          <span class="btn__label">Como funciona</span>
+        </button>
+
+        <button id="new-chat-btn" class="btn btn--ghost" type="button" title="Iniciar nova conversa">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          <span class="btn__label">Nova conversa</span>
+        </button>
+      </div>
     </header>
+
+    <!-- Transparência: capacidades e limites (padrão "Set the right expectations") -->
+    <div id="disclosure" class="banner" role="note">
+      <span class="banner__icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 11v5"/>
+          <path d="M12 8h.01"/>
+        </svg>
+      </span>
+      <p class="banner__text">
+        <strong>Assistente com IA generativa.</strong> Suas mensagens são enviadas ao Google Gemini, através de uma
+        função no Netlify, para gerar as respostas — e podem conter erros. A conversa fica apenas nesta aba.
+      </p>
+      <div class="banner__actions">
+        <button id="disclosure-more" class="btn btn--sm btn--ghost" type="button">Como funciona</button>
+        <button id="disclosure-dismiss" class="btn btn--sm btn--ghost" type="button">Entendi</button>
+      </div>
+    </div>
 
     <!-- Área de mensagens -->
     <main id="messages" class="messages" role="log" aria-live="polite" aria-label="Histórico da conversa"></main>
+
+    <!-- Sugestões: dão um ponto de partida seguro para explorar o sistema -->
+    <div id="suggestions" class="suggestions" hidden>
+      <p class="suggestions__label">Sugestões para começar</p>
+      <div class="suggestions__list">
+        <button class="chip" type="button" data-prompt="O que você sabe fazer?">O que você sabe fazer?</button>
+        <button class="chip" type="button" data-prompt="Quais são os seus limites?">Quais são os seus limites?</button>
+        <button class="chip" type="button" data-prompt="Como meus dados são usados?">Como meus dados são usados?</button>
+      </div>
+    </div>
 
     <!-- Composer -->
     <footer class="composer">
@@ -48,20 +89,104 @@
           class="composer__input"
           rows="1"
           placeholder="Digite sua mensagem..."
-          aria-describedby="composer-hint"
+          aria-describedby="composer-hint privacy-note"
         ></textarea>
+
+        <button id="stop-btn" class="btn btn--ghost" type="button" hidden>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <rect x="7" y="7" width="10" height="10"/>
+          </svg>
+          <span class="btn__label">Parar</span>
+        </button>
 
         <button id="send-btn" class="btn btn--primary" type="submit" title="Enviar mensagem">
           <span class="btn__label">Enviar</span>
-          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true">
-            <path d="M28.6 3.4 2.8 14.1a1 1 0 0 0 .2 1.9l10.2 2.6 2.6 10.2a1 1 0 0 0 1.9.2L28.6 3.4zM6.8 15.1 24.7 7.3l-7.8 17.9-2.2-8.6 8-8-9.9 6.1z"/>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 2 11 13"/>
+            <path d="M22 2 15 22l-4-9-9-4z"/>
           </svg>
         </button>
       </form>
-      <p id="composer-hint" class="composer__hint">Enter envia · Shift + Enter quebra linha</p>
+
+      <p id="composer-status" class="composer__status" aria-live="polite" hidden></p>
+
+      <div class="composer__meta">
+        <p id="composer-hint" class="composer__hint">Enter envia · Shift + Enter quebra linha</p>
+        <p id="privacy-note" class="composer__privacy">
+          <span aria-hidden="true">Sem cadastro. As mensagens vão para o Google Gemini para gerar a resposta.</span>
+          <button id="privacy-more" class="link-btn" type="button">Ver detalhes</button>
+        </p>
+      </div>
     </footer>
 
   </div>
+
+  <!-- Explicação aprofundada fora do fluxo ativo ("Go beyond in-the-moment explanations") -->
+  <dialog id="help-dialog" class="dialog" aria-labelledby="help-title">
+    <div class="dialog__header">
+      <h2 id="help-title" class="dialog__title">Como funciona</h2>
+      <button id="help-close" class="icon-btn" type="button" title="Fechar" aria-label="Fechar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="dialog__body">
+      <section class="dialog__section">
+        <h3 class="dialog__heading">O que eu faço</h3>
+        <ul class="dialog__list">
+          <li>Respondo suas mensagens aqui no chat e mantenho o histórico enquanto esta página estiver aberta.</li>
+          <li>Explico o quanto entendi de cada mensagem, para você saber quando vale confirmar o que eu disse.</li>
+          <li>Deixo você no controle: parar, gerar de novo, ocultar, editar e recomeçar — com opção de desfazer.</li>
+        </ul>
+      </section>
+
+      <section class="dialog__section">
+        <h3 class="dialog__heading">O que eu não faço</h3>
+        <ul class="dialog__list">
+          <li>Minhas respostas são geradas pelo Google Gemini: podem estar erradas, desatualizadas ou inventar detalhes.</li>
+          <li>Não acesso a internet em tempo real, aos seus arquivos, contas ou a qualquer outra informação sua.</li>
+          <li>Não entendo pedidos ambíguos ou muito específicos — nesses casos eu digo que não tenho certeza.</li>
+          <li>Não sirvo para decisões importantes (saúde, finanças, jurídico). Confirme em fontes próprias.</li>
+        </ul>
+      </section>
+
+      <section class="dialog__section">
+        <h3 class="dialog__heading">Seus dados</h3>
+        <ul class="dialog__list">
+          <li>A conversa existe apenas nesta aba do navegador e desaparece ao recarregar a página.</li>
+          <li>Não há login nem banco de dados. Para gerar cada resposta, as mensagens da conversa são enviadas ao Google Gemini por uma função no Netlify.</li>
+          <li>A chave de acesso ao Gemini fica no servidor — nunca no código desta página.</li>
+          <li>Os votos de útil/não útil ficam registrados apenas nesta aba.</li>
+        </ul>
+      </section>
+
+      <section class="dialog__section">
+        <h3 class="dialog__heading">Sobre os limites das respostas</h3>
+        <ul class="dialog__list">
+          <li>Toda resposta recebe o selo <strong>Confiança média</strong>: um modelo de linguagem não informa um grau de confiança calibrado, então a interface não classifica a resposta como alta nem como baixa.</li>
+          <li>Trate o selo como um lembrete: confirme por conta própria o que for importante antes de usar.</li>
+        </ul>
+      </section>
+
+      <section class="dialog__section">
+        <h3 class="dialog__heading">Como este desenho foi definido</h3>
+        <p class="dialog__paragraph">
+          O comportamento desta interface segue os padrões do
+          <a class="dialog__link" href="https://pair.withgoogle.com/guidebook-v2/patterns" target="_blank" rel="noopener noreferrer">People + AI Guidebook (Google PAIR)</a>:
+          definir expectativas, explicar benefícios em vez de tecnologia, mostrar confiança de forma interpretável,
+          oferecer canais de feedback e devolver o controle ao usuário quando a automação falha.
+        </p>
+      </section>
+    </div>
+
+    <div class="dialog__footer">
+      <button id="help-ok" class="btn btn--primary" type="button">Entendi</button>
+    </div>
+  </dialog>
+
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
 
   <script src="assistant.js"></script>
   <script src="app.js"></script>

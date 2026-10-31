@@ -1,0 +1,9 @@
+# Configuração de publicação do chat no Netlify.
+# O site é a própria pasta (index.html, styles.css, app.js, assistant.js).
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[build.environment]
+  # A função usa `fetch` global, disponível a partir do Node 18.
+  NODE_VERSION = "20"
